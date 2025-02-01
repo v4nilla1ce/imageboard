@@ -1,11 +1,7 @@
+import { defineConfig } from "vite"; // ✅ Make sure this import exists
+import react from "@vitejs/plugin-react";
+
 export default defineConfig({
-  build: {
-    rollupOptions: {
-      output: {
-        manualChunks: {
-          vendor: ['react', 'react-dom'], // Example: Separate React into its own chunk
-        },
-      },
-    },
-  },
+  plugins: [react()],
+  base: "/imageboard/", // ✅ Ensure this is correct for Netlify
 });
