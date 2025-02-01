@@ -1,0 +1,8 @@
+[
+    {
+      "origin": ["https://v4nilla1ce.github.io", "https://imageboard-176a7.web.app"],
+      "method": ["GET", "POST", "PUT", "DELETE"],
+      "responseHeader": ["Content-Type", "Authorization"],
+      "maxAgeSeconds": 3600
+    }
+  ]
