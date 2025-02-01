@@ -1,21 +1,28 @@
 import { useState } from "react";
 import { Card } from "./components/ui/card";
 import { Button } from "./components/ui/button";
-import { Input } from "./components/ui/input";
 import { Textarea } from "./components/ui/textarea";
 import { Upload } from "lucide-react";
 import { motion } from "framer-motion";
+import { UserInfoForm } from "./components/ui/UserInfoForm";
+import { CommentList } from "./components/ui/CommentList";
+import { CommentFormToggle } from "./components/ui/CommentFormToggle";
 
 export default function Imageboard() {
   const [posts, setPosts] = useState([]);
   const [text, setText] = useState("");
   const [image, setImage] = useState(null);
+  const [username, setUsername] = useState("");
+  const [country, setCountry] = useState("");
 
   const handlePost = () => {
     if (text || image) {
-      setPosts([{ text, image, id: Date.now() }, ...posts]);
+      const postUsername = username.trim() ? username : "An0n";
+      setPosts([{ text, image, username: postUsername, country, id: Date.now(), comments: [] }, ...posts]);
       setText("");
       setImage(null);
+      setUsername("");
+      setCountry("");
     }
   };
 
@@ -28,10 +35,27 @@ export default function Imageboard() {
     }
   };
 
+  const addComment = (postId, comment) => {
+    setPosts((prevPosts) =>
+      prevPosts.map((post) =>
+        post.id === postId
+          ? { ...post, comments: [...post.comments, comment] }
+          : post
+      )
+    );
+  };
+
   return (
     <div className="min-h-screen bg-purple-900 text-white p-6 flex flex-col items-center">
       <div className="w-full max-w-2xl">
+        {/* Post Form */}
         <Card className="p-4 bg-purple-800 rounded-2xl shadow-md">
+          <UserInfoForm
+            username={username}
+            setUsername={setUsername}
+            country={country}
+            setCountry={setCountry}
+          />
           <Textarea
             placeholder="What's on your mind?"
             value={text}
@@ -51,12 +75,46 @@ export default function Imageboard() {
           {image && <img src={image} alt="Preview" className="mt-3 rounded-lg max-h-40" />}
           <Button onClick={handlePost} className="w-full mt-4 bg-purple-600 hover:bg-purple-500">Post</Button>
         </Card>
+
+        {/* Post List */}
         <div className="mt-6 space-y-4">
           {posts.map((post) => (
             <motion.div key={post.id} initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
               <Card className="p-4 bg-purple-800 rounded-2xl shadow-md">
+                {/* Post Content */}
+                <div className="flex items-center mb-2">
+                  <span className="mr-2">{post.country}</span>
+                  <span className="font-bold">{post.username}</span>
+                </div>
                 {post.text && <p className="mb-2 text-white">{post.text}</p>}
                 {post.image && <img src={post.image} alt="Post" className="rounded-lg max-h-60" />}
+
+                {/* Comments */}
+                <CommentList
+                  comments={post.comments}
+                  addReply={(commentId, reply) => {
+                    const updatedComments = post.comments.map((comment) =>
+                      comment.id === commentId
+                        ? { ...comment, replies: [...comment.replies, reply] }
+                        : comment
+                    );
+                    setPosts((prevPosts) =>
+                      prevPosts.map((p) =>
+                        p.id === post.id ? { ...p, comments: updatedComments } : p
+                      )
+                    );
+                  }}
+                />
+
+                {/* Initial Comment Reply Link */}
+                <CommentFormToggle
+                  onSubmit={(newComment) => {
+                    const updatedPosts = posts.map((p) =>
+                      p.id === post.id ? { ...p, comments: [...p.comments, newComment] } : p
+                    );
+                    setPosts(updatedPosts);
+                  }}
+                />
               </Card>
             </motion.div>
           ))}
