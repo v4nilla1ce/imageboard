@@ -3,7 +3,7 @@ import react from '@vitejs/plugin-react';
 
 export default defineConfig({
   plugins: [react()],
-  base: './', // Relativer Pfad für die Assets
+  base: '/imageboard/', // Basis-URL für Subdirectory-Deployments
   build: {
     outDir: "dist", // Output-Verzeichnis
   },
@@ -15,5 +15,12 @@ export default defineConfig({
     alias: {
       '@': '/src', // Vereinfachte Importe
     },
+  },
+  // Middleware für das SPA-Routing in Entwicklungs- und Produktionsumgebungen
+  define: {
+    'process.env': {}
+  },
+  optimizeDeps: {
+    include: ['react', 'react-dom'],
   },
 });

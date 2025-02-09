@@ -7,8 +7,13 @@ export default function App() {
   return (
     <Router basename="/imageboard">
       <Routes>
+        {/* Hauptseite */}
         <Route path="/" element={<MainPage />} />
+
+        {/* Dynamische Boards basierend auf der URL */}
         <Route path="/:boardName" element={<BoardPage />} />
+
+        {/* Fallback für ungültige Routen */}
         <Route path="*" element={<NotFound />} />
       </Routes>
     </Router>
