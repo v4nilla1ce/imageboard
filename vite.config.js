@@ -1,20 +1,19 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 
-// https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
-  base: "/imageboard/", // Ensure this matches your deployment subdirectory
+  base: './', // Relativer Pfad für die Assets
   build: {
-    outDir: "dist", // Ensure output directory is set correctly
+    outDir: "dist", // Output-Verzeichnis
   },
   server: {
-    host: true, // Allows external access if needed
-    port: 3000, // Your development server port
+    host: true, // Externen Zugriff ermöglichen
+    port: 3000, // Entwicklungsserver-Port
   },
   resolve: {
     alias: {
-      '@': '/src', // Simplifies imports from the 'src' directory
+      '@': '/src', // Vereinfachte Importe
     },
   },
 });
